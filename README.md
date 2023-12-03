@@ -1,0 +1,2 @@
+# Terinformatika
+Beadando hazifeladat masodik
