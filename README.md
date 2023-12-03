@@ -26,6 +26,3 @@ Ez a projekt egy interaktív webtérképet hoz létre a Leaflet nyílt forrásk�
 
 ## Adatok
 - A nevezetességek adatai és a történelmi térkép általános forrásokból származnak.
-
-## Licenc
-A projekt kódja és dokumentációja MIT licenc alatt áll.
