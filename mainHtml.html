@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Terinfo Budapest 2</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="./main.css" /> 
+</head>
+<body>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    var map = L.map('map').setView([47.4979, 19.0402], 13);
+
+    // Alaptérképek
+    var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    var streetMapLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© CartoDB contributors'
+    });
+
+    var satelliteMapLayer = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+        maxZoom: 19,
+        subdomains:['mt0','mt1','mt2','mt3'],
+        attribution: '© Google Maps contributors'
+    });
+
+    // Ikon
+    var flagIcon = L.icon({
+        iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/c/c1/Flag_of_Hungary.svg',
+        iconSize: [38, 20],
+        iconAnchor: [19, 10],
+        popupAnchor: [0, -10]
+    });
+
+    // Markerek groups
+    var markers = L.layerGroup([
+        L.marker([47.5071, 19.0457], {icon: flagIcon}).bindPopup("Parlament"),
+        L.marker([47.5149, 19.0775], {icon: flagIcon}).bindPopup("Hősök tere"),
+        L.marker([47.4865, 19.0495], {icon: flagIcon}).bindPopup("Citadella")
+    ]).addTo(map);
+
+    // ImageOverlay 
+    var imageUrl = './budapest_historical.jpg',
+        imageBounds = [[47.512, 19.028], [47.486, 19.060]];
+    var overlayImage = L.imageOverlay(imageUrl, imageBounds); 
+
+    // GeoJSON line to connect Markers
+    var geojsonFeature = {
+        "type": "Feature",
+        "properties": {
+            "name": "GeoJSON Line",
+            "popupContent": "This line connects the three markers."
+        },
+        "geometry": {
+            "type": "LineString",
+            "coordinates": [
+                [19.0457, 47.5071],
+                [19.0775, 47.5149],
+                [19.0495, 47.4865]
+            ]
+        }
+    };
+
+    var geojsonLayer = L.geoJSON(geojsonFeature).addTo(map);
+
+    // Parlament Kör
+    var circle = L.circle([47.5071, 19.0457], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: 500
+    }).addTo(map);
+
+    // Rétegek
+    var baseMaps = {
+        "OpenStreetMap": osmLayer,
+        "Street Map": streetMapLayer,
+        "Satellite": satelliteMapLayer
+    };
+
+    var overlayMaps = {
+        "Markers": markers,
+        "Historical Image": overlayImage,
+        "Marker Connecter": geojsonLayer,
+        "Circle": circle
+    };
+
+    L.control.layers(baseMaps, overlayMaps).addTo(map);
+</script>
+
+</body>
+</html>
